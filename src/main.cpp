@@ -33,7 +33,6 @@ void test3() {
   std::istringstream input_stream(input);
   std::ostringstream output_stream;
   // Program to echo back the byte
-  // const std::string program = "+++++[>+<-].";
   const std::string program = ",[>+<-]>.";
   BrainFuckInterpreter brainfuck_interpreter(program, output_stream,
                                              input_stream);
@@ -45,7 +44,6 @@ void test4() {
   const std::string input(1, 5);
   std::istringstream input_stream(input);
   std::ostringstream output_stream;
-  // Program to echo back the byte
   const std::string program = "[+++++].";
   BrainFuckInterpreter brainfuck_interpreter(program, output_stream,
                                              input_stream);
@@ -57,7 +55,6 @@ void test5() {
   const std::string input(1, 5);
   std::istringstream input_stream(input);
   std::ostringstream output_stream;
-  // Program to echo back the byte
   const std::string program = ",>[<+++++].";
   BrainFuckInterpreter brainfuck_interpreter(program, output_stream,
                                              input_stream);

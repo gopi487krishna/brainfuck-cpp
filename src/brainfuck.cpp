@@ -52,6 +52,8 @@ std::uint64_t BrainFuckInterpreter::handleIgnoreMode(std::uint64_t curr_pc,
   return curr_pc + 1;
 }
 
+void BrainFuckInterpreter::expandDataArr() { data_arr_.resize(d_index_ * 2, 0); }
+
 bool BrainFuckInterpreter::execute() {
   for (auto pc = 0; pc < program_.size();) {
     auto curr_pc = pc;
@@ -70,6 +72,8 @@ bool BrainFuckInterpreter::execute() {
       break;
     case DATAPTR_INC:
       d_index_++;
+      if (d_index_ >= data_arr_.size())
+        expandDataArr();
       break;
     case DATAPTR_DEC:
       d_index_--;

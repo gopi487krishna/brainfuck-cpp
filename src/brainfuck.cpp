@@ -1,4 +1,5 @@
 #include "brainfuck.hpp"
+#include <cassert>
 std::uint64_t BrainFuckInterpreter::handleOpenBracket(std::uint64_t curr_pc) {
   bool jmp_loc_available = true;
 
@@ -19,6 +20,8 @@ std::uint64_t BrainFuckInterpreter::handleOpenBracket(std::uint64_t curr_pc) {
 
 void BrainFuckInterpreter::create_jump_location(std::uint64_t jump_index,
                                                 std::uint64_t curr_pc) {
+  assert(jump_loc_map.count(jump_index) == 0 && "Program Error : Jump location already exist");
+  assert(jump_loc_map.count(curr_pc) == 0 && "Program Error : Jump location already exist");
   jump_loc_map[jump_index] = curr_pc;
   jump_loc_map[curr_pc] = jump_index;
 }
@@ -26,6 +29,7 @@ void BrainFuckInterpreter::create_jump_location(std::uint64_t jump_index,
 std::uint64_t BrainFuckInterpreter::handleCloseBracket(std::uint64_t curr_pc) {
 
   if (!jump_loc_map.count(curr_pc)) {
+    assert(open_brace_indexes_.size() && "Program Error : Matching LOOP_BEG not found");
     auto jump_index = open_brace_indexes_.top();
     open_brace_indexes_.pop();
     create_jump_location(jump_index, curr_pc);
@@ -37,10 +41,11 @@ std::uint64_t BrainFuckInterpreter::handleCloseBracket(std::uint64_t curr_pc) {
 std::uint64_t BrainFuckInterpreter::handleIgnoreMode(std::uint64_t curr_pc,
                                                      const char token) {
   switch (token) {
-  case '[':
+  case LOOP_BEG:
     open_brace_indexes_.push(curr_pc);
     break;
-  case ']':
+  case LOOP_END:
+    assert(open_brace_indexes_.size() && "Program Error : Matching LOOP_BEG not found");
     auto jump_index = open_brace_indexes_.top();
     open_brace_indexes_.pop();
     create_jump_location(jump_index, curr_pc);
@@ -92,5 +97,6 @@ bool BrainFuckInterpreter::execute() {
       break;
     }
   }
+  assert(open_brace_indexes_.empty() && "Program Error : Loop end not found");
   return true;
 }
